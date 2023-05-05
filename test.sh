@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Bash script to test the `cargo expand` outputs of each test and compare diffs
+
 rm -rf ./tmp
 mkdir ./tmp
 
