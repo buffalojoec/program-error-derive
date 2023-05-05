@@ -23,7 +23,7 @@ pub fn program_error(input: TokenStream) -> TokenStream {
     // Build the match arms for `PrintProgramError`
     let ppe_match_arms = variants.iter().map(|variant| {
         let variant_ident = &variant.ident;
-        let error_msg = get_error_message(&variant)
+        let error_msg = get_error_message(variant)
             .unwrap_or_else(|| String::from("Unknown custom program error"));
         quote! {
             #ident::#variant_ident => {
