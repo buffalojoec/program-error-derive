@@ -1,6 +1,4 @@
-use num_derive::FromPrimitive;
 use solana_program_error_derive::solana_program_error;
-use thiserror::Error;
 
 /// Errors that may be returned by the mint-to-hook interface.
 #[solana_program_error]

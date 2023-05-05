@@ -30,7 +30,14 @@ pub fn program_error(input: TokenStream) -> TokenStream {
     });
 
     quote! {
-        #[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
+        #[derive(
+            Clone,
+            Debug,
+            Eq,
+            thiserror::Error,
+            num_derive::FromPrimitive,
+            PartialEq
+        )]
         #input
 
         impl From<#ident> for solana_program::program_error::ProgramError {

@@ -848,17 +848,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "program-error-derive"
-version = "0.1.0"
-dependencies = [
- "num-derive",
- "num-traits",
- "solana-program",
- "solana-program-error-derive",
- "thiserror",
-]
-
-[[package]]
 name = "quote"
 version = "1.0.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1235,6 +1224,17 @@ dependencies = [
 
 [[package]]
 name = "solana-program-error-derive"
+version = "0.1.0"
+dependencies = [
+ "num-derive",
+ "num-traits",
+ "solana-program",
+ "solana-program-error-derive-impl",
+ "thiserror",
+]
+
+[[package]]
+name = "solana-program-error-derive-impl"
 version = "0.1.0"
 dependencies = [
  "proc-macro2",
