@@ -1,8 +1,8 @@
-use solana_program_error_derive::solana_program_error;
+use solana_program_error_derive::*;
 
-/// Errors that may be returned by the mint-to-hook interface.
+/// Example error
 #[solana_program_error]
-pub enum MintToHookError {
+pub enum ExampleError {
     /// Mint has no mint authority
     #[error("Mint has no mint authority")]
     MintHasNoMintAuthority,
@@ -11,7 +11,8 @@ pub enum MintToHookError {
     IncorrectMintAuthority,
 }
 
+/// Tests that all macros compile
 #[test]
-fn test() {
-    let _ = MintToHookError::MintHasNoMintAuthority;
+fn _test() {
+    let _ = ExampleError::MintHasNoMintAuthority;
 }

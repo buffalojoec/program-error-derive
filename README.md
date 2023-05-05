@@ -1,13 +1,33 @@
 # Solana Program Error Derive
 
-Proc macro for creating Solana Program error enums (WIP).
+Procedural macro for creating Solana Program error enums.
+
+It can be cumbersome to ensure your program's defined errors - typically represented
+in an enum - implement the required traits and will print to the program's logs when they're
+invoked.
+
+This procedureal macro will give you all of the required implementations out of the box:
+* `Clone`
+* `Debug`
+* `Eq`
+* `thiserror::Error`
+* `num_derive::FromPrimitive`
+* `PartialEq`
+
+It also imports the required crates so you don't have to in your program:
+* `num_derive`
+* `num_traits`
+* `thiserror`
 
 ---
 
-Annotate your enum:
+Just annotate your enum...
 ```rust
+use solana_program_error_derive::*;
+
+/// Example error
 #[solana_program_error]
-pub enum MintToHookError {
+pub enum ExampleError {
     /// Mint has no mint authority
     #[error("Mint has no mint authority")]
     MintHasNoMintAuthority,
@@ -17,9 +37,10 @@ pub enum MintToHookError {
 }
 ```
 
-Get:
+...and get:
 ```rust
-pub enum MintToHookError {
+/// Example error
+pub enum ExampleError {
     /// Mint has no mint authority
     #[error("Mint has no mint authority")]
     MintHasNoMintAuthority,
@@ -28,51 +49,47 @@ pub enum MintToHookError {
     IncorrectMintAuthority,
 }
 #[automatically_derived]
-impl ::core::clone::Clone for MintToHookError {
+impl ::core::clone::Clone for ExampleError {
     #[inline]
-    fn clone(&self) -> MintToHookError {
+    fn clone(&self) -> ExampleError {
         match self {
-            MintToHookError::MintHasNoMintAuthority => {
-                MintToHookError::MintHasNoMintAuthority
-            }
-            MintToHookError::IncorrectMintAuthority => {
-                MintToHookError::IncorrectMintAuthority
-            }
+            ExampleError::MintHasNoMintAuthority => ExampleError::MintHasNoMintAuthority,
+            ExampleError::IncorrectMintAuthority => ExampleError::IncorrectMintAuthority,
         }
     }
 }
 #[automatically_derived]
-impl ::core::fmt::Debug for MintToHookError {
+impl ::core::fmt::Debug for ExampleError {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
         ::core::fmt::Formatter::write_str(
             f,
             match self {
-                MintToHookError::MintHasNoMintAuthority => "MintHasNoMintAuthority",
-                MintToHookError::IncorrectMintAuthority => "IncorrectMintAuthority",
+                ExampleError::MintHasNoMintAuthority => "MintHasNoMintAuthority",
+                ExampleError::IncorrectMintAuthority => "IncorrectMintAuthority",
             },
         )
     }
 }
 #[automatically_derived]
-impl ::core::marker::StructuralEq for MintToHookError {}
+impl ::core::marker::StructuralEq for ExampleError {}
 #[automatically_derived]
-impl ::core::cmp::Eq for MintToHookError {
+impl ::core::cmp::Eq for ExampleError {
     #[inline]
     #[doc(hidden)]
     #[no_coverage]
     fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[allow(unused_qualifications)]
-impl std::error::Error for MintToHookError {}
+impl std::error::Error for ExampleError {}
 #[allow(unused_qualifications)]
-impl std::fmt::Display for MintToHookError {
+impl std::fmt::Display for ExampleError {
     fn fmt(&self, __formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
         #[allow(unused_variables, deprecated, clippy::used_underscore_binding)]
         match self {
-            MintToHookError::MintHasNoMintAuthority {} => {
+            ExampleError::MintHasNoMintAuthority {} => {
                 __formatter.write_fmt(format_args!("Mint has no mint authority"))
             }
-            MintToHookError::IncorrectMintAuthority {} => {
+            ExampleError::IncorrectMintAuthority {} => {
                 __formatter
                     .write_fmt(
                         format_args!(
@@ -84,18 +101,18 @@ impl std::fmt::Display for MintToHookError {
     }
 }
 #[allow(non_upper_case_globals, unused_qualifications)]
-const _IMPL_NUM_FromPrimitive_FOR_MintToHookError: () = {
+const _IMPL_NUM_FromPrimitive_FOR_ExampleError: () = {
     #[allow(clippy::useless_attribute)]
     #[allow(rust_2018_idioms)]
     extern crate num_traits as _num_traits;
-    impl _num_traits::FromPrimitive for MintToHookError {
+    impl _num_traits::FromPrimitive for ExampleError {
         #[allow(trivial_numeric_casts)]
         #[inline]
         fn from_i64(n: i64) -> Option<Self> {
-            if n == MintToHookError::MintHasNoMintAuthority as i64 {
-                Some(MintToHookError::MintHasNoMintAuthority)
-            } else if n == MintToHookError::IncorrectMintAuthority as i64 {
-                Some(MintToHookError::IncorrectMintAuthority)
+            if n == ExampleError::MintHasNoMintAuthority as i64 {
+                Some(ExampleError::MintHasNoMintAuthority)
+            } else if n == ExampleError::IncorrectMintAuthority as i64 {
+                Some(ExampleError::IncorrectMintAuthority)
             } else {
                 None
             }
@@ -107,27 +124,27 @@ const _IMPL_NUM_FromPrimitive_FOR_MintToHookError: () = {
     }
 };
 #[automatically_derived]
-impl ::core::marker::StructuralPartialEq for MintToHookError {}
+impl ::core::marker::StructuralPartialEq for ExampleError {}
 #[automatically_derived]
-impl ::core::cmp::PartialEq for MintToHookError {
+impl ::core::cmp::PartialEq for ExampleError {
     #[inline]
-    fn eq(&self, other: &MintToHookError) -> bool {
+    fn eq(&self, other: &ExampleError) -> bool {
         let __self_tag = ::core::intrinsics::discriminant_value(self);
         let __arg1_tag = ::core::intrinsics::discriminant_value(other);
         __self_tag == __arg1_tag
     }
 }
-impl From<MintToHookError> for solana_program::program_error::ProgramError {
-    fn from(e: MintToHookError) -> Self {
+impl From<ExampleError> for solana_program::program_error::ProgramError {
+    fn from(e: ExampleError) -> Self {
         solana_program::program_error::ProgramError::Custom(e as u32)
     }
 }
-impl<T> solana_program::decode_error::DecodeError<T> for MintToHookError {
+impl<T> solana_program::decode_error::DecodeError<T> for ExampleError {
     fn type_of() -> &'static str {
-        "MintToHookError"
+        "ExampleError"
     }
 }
-impl solana_program::program_error::PrintProgramError for MintToHookError {
+impl solana_program::program_error::PrintProgramError for ExampleError {
     fn print<E>(&self)
     where
         E: 'static + std::error::Error + solana_program::decode_error::DecodeError<E>
@@ -135,13 +152,13 @@ impl solana_program::program_error::PrintProgramError for MintToHookError {
             + num_traits::FromPrimitive,
     {
         match self {
-            MintToHookError::MintHasNoMintAuthority => {
-                ::solana_program::log::sol_log("Mint has no mint authority");
+            ExampleError::MintHasNoMintAuthority => {
+                ::solana_program::log::sol_log("Mint has no mint authority")
             }
-            MintToHookError::IncorrectMintAuthority => {
+            ExampleError::IncorrectMintAuthority => {
                 ::solana_program::log::sol_log(
                     "Incorrect mint authority has signed the instruction",
-                );
+                )
             }
         }
     }

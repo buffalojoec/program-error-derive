@@ -3,12 +3,15 @@ use proc_macro2::Span;
 use quote::quote;
 use syn::{parse_macro_input, Data, DeriveInput, Error, LitStr, Variant};
 
+/// The main function that produces the tokens required to turn your
+/// error enum into a Solana Program Error
 pub fn program_error(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
 
     let ident = &input.ident;
     let data = &input.data;
 
+    // Error if its not an enum
     let variants = if let Data::Enum(enum_data) = data {
         &enum_data.variants
     } else {
@@ -17,27 +20,20 @@ pub fn program_error(input: TokenStream) -> TokenStream {
             .into();
     };
 
-    let variant_match_arms = variants.iter().map(|variant| {
+    // Build the match arms for `PrintProgramError`
+    let ppe_match_arms = variants.iter().map(|variant| {
         let variant_ident = &variant.ident;
         let error_msg = get_error_message(&variant)
-            .unwrap_or_else(|| String::from("Unknown error in ProgramError"));
-
+            .unwrap_or_else(|| String::from("Unknown custom program error"));
         quote! {
             #ident::#variant_ident => {
-                solana_program::msg!(#error_msg);
+                solana_program::msg!(#error_msg)
             }
         }
     });
 
     quote! {
-        #[derive(
-            Clone,
-            Debug,
-            Eq,
-            thiserror::Error,
-            num_derive::FromPrimitive,
-            PartialEq
-        )]
+        #[derive(Clone, Debug, Eq, thiserror::Error, num_derive::FromPrimitive, PartialEq)]
         #input
 
         impl From<#ident> for solana_program::program_error::ProgramError {
@@ -62,7 +58,7 @@ pub fn program_error(input: TokenStream) -> TokenStream {
                     + num_traits::FromPrimitive,
             {
                 match self {
-                    #(#variant_match_arms),*
+                    #(#ppe_match_arms),*
                 }
             }
         }
@@ -70,6 +66,7 @@ pub fn program_error(input: TokenStream) -> TokenStream {
     .into()
 }
 
+/// Helper to parse out the string literal from the `#[error(..)]` attribute
 fn get_error_message(variant: &Variant) -> Option<String> {
     let attrs = &variant.attrs;
 
